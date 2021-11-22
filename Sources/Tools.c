@@ -1,51 +1,120 @@
 #include "../Includes/Tools.h"
-#include <stdbool.h>
 #include <stdio.h>
-struct calc
+#include <stdlib.h>
+#include <stdbool.h>
+
+struct line
 {
-    double a,c;
-    char b, rep;
-}ca;
-void calculs()
+    char *line;
+}c;
+
+struct tab
 {
-    switch (ca.b) {
-        case '+': {
-            printf("Result : %lf\n", ca.a + ca.c); break;
+    char tab[100][100];
+
+}t;
+
+struct prio
+{
+    int prio;   
+}p;
+
+void my_getnextline()
+{
+    FILE *fp;
+    size_t len = 0;
+    ssize_t read;
+
+    read = getline(&c.line, &len, stdin);
+}
+void load()
+{
+     int i = 0, j = 0;
+
+    for (int n = 0; c.line[n] != '\0'; n++)
+    {
+        if (c.line[n] >= '0' && c.line[n] <= '9' )
+        {
+            t.tab[i][j] = c.line[n];
+            j++;
         }
-        case '-': {
-            printf("Result : %lf\n", ca.a - ca.c); break;
+
+        if(c.line[n] == '+' || c.line[n] == '-' || c.line[n] == '*' || c.line[n] == '/'){
+            i++;
+            j = 0;
+            t.tab[i][j] = c.line[n];
+            i++;
         }
-        case '*': {
-            printf("Result : %lf\n", ca.a * ca.c); break;
+    }   
+}
+
+void seek()
+{
+    bool ismult = false;
+    int i = 0;
+    p.prio = 0;
+    while (t.tab[i][0] != '\0')
+    {
+        if (t.tab[i][0] == '+' || t.tab[i][0] == '-' && ismult == false)
+        {
+            p.prio = i;
         }
-        case '/': {
-            if (ca.c == 0)
-            {
-                printf("Have you ever seen somebody who divide by 0 ? A**hole \n"); break;
-            }
-            if (ca.c != 0)
-            {
-                printf("Result : %lf\n", ca.a / ca.c); break;
-            }
+
+        if (t.tab[i][0] == '/' || t.tab[i][0] == '*')
+        {
+            ismult = true;
+            p.prio = i;
         }
-        default :
-            printf("Try another operator\n"); break;
+        i++;
     }
 }
 
 void calcul()
 {
-    bool play = true;
-    while (play == true) {
-    printf("Calcul :\n");
-    scanf("%lf %c %lf", &ca.a, &ca.b, &ca.c);
-    calculs();
-    printf("Again ? y/n\n");
-    scanf("%s", &ca.rep);
-    if (ca.rep == 'n')
+    int a, b, res;
+    a = atoi(t.tab[p.prio - 1]);
+    b = atoi(t.tab[p.prio + 1]);
+    if (p.prio != 0)
     {
-        play = false;
+       switch (t.tab[p.prio][0]) {
+            case '+': {
+                res = a + b;
+                break;
+            }
+            case '-': {
+            res = a - b;
+            break;
+        }
+        case '*': {
+            res = a * b;
+            break;
+        }
+        case '/': {
+            if (b == 0)
+            {
+                printf("Have you ever seen somebody who divide by 0 ? A**hole \n");
+                break;
+            }
+            if (b != 0)
+            {
+                res = a / b;
+                break;
+            }
+        }
+        default :
+        printf("Opperator error");
+        exit (0);
+        break;
     }
+
+    printf("%s", t.tab[p.prio-1]);
+    seek();
+    calcul(p.prio);
     }
 }
 
+void test() {
+    int a = atoi(t.tab[p.prio - 1]);
+    printf("%d\n", a);
+    printf("%s", t.tab[p.prio-1]);
+}

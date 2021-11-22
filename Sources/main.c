@@ -2,6 +2,9 @@
 
 int main()
 {
-    calcul();
-    return 0;
+    my_getnextline();
+    load();
+    seek();
+    test();
+    return 1;
 }
